@@ -1,1 +1,1 @@
-# AIzuhack_LINEBot
+# Aizuhack_LINEBot
