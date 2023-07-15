@@ -1,13 +1,12 @@
 import { error } from '../../log.js';
-import { get } from '../../request.js';
-import { createData, deleteData, readData } from '../../crud.js';
+import { createData, readData } from '../../Crud.js';
 import { hasKey } from '../../haskey.js';
 
 const contextMap = {
   memoMode: async (event, appContext) => {
     await createData(event.source.userId, 'memo', event.message.text, appContext);
 
-    await deleteData(event.source.userId, 'context', appContext);
+    // await deleteData(event.source.userId, 'context', appContext);
 
     return {
       type: 'text',

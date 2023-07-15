@@ -1,16 +1,12 @@
 import {
-  createData, deleteData, readData, updateData,
-} from '../../crud.js';
+  readData, updateData,
+} from '../../Crud.js';
 
 // ユーザーのプロフィールを取得する関数
-const getUserProfile = (event, client) => client.getProfile(event.source.userId);
+// const getUserProfile = (event, client) => client.getProfile(event.source.userId);
 
 // 受け取ったメッセージと返信するメッセージ(を返す関数)をマッピング
 export const messageMap = {
-  機能: () => ({
-    type: 'text',
-    text: '朝7:00に照明をつけて、カーテンを開けます!',
-  }),
   ありがとう: () => ({
     type: 'text',
     text: 'Hello, world',
@@ -23,63 +19,88 @@ export const messageMap = {
     type: 'text',
     text: 'Hello, world',
   }),
-  好き: () => ({
+  設定: () => ({
     type: 'text',
     text: 'Hello, world',
   }),
-  セバスチャン: () => ({
+  使い方: () => ({
     type: 'text',
-    text: 'Hello, world',
+    text: 'ご要望がございましたら下のmenuからお選びくださいませ。「設定」にて指定していただいた時間に電気をつけ、カーテンをお開けいたします。',
   }),
-  Create: async (event, appContext) => {
-    const date = new Date();
-    await createData(event.source.userId, 'testData', `Data created at ${date}`, appContext);
-    return {
-      type: 'text',
-      text: 'データが作成されました',
-    };
-  },
-  Read: async (event, appContext) => {
-    const dbData = await readData(event.source.userId, 'testData', appContext);
-    return {
-      type: 'text',
-      text: `DBには以下のデータが保存されています\n\n${dbData.Items[0].Data}`,
-    };
-  },
-  Update: async (event, appContext) => {
-    const date = new Date();
-    await updateData(event.source.userId, 'testData', `Data created at ${date}`, appContext);
-    return {
-      type: 'text',
-      text: 'データを更新しました',
-    };
-  },
-  Delete: async (event, appContext) => {
-    await deleteData(event.source.userId, 'testData', appContext);
-    return {
-      type: 'text',
-      text: 'データを削除しました',
-    };
-  },
-  メモ: async (event, appContext) => {
-    const memoData = await readData(event.source.userId, 'memo', appContext);
-    if (memoData.Items[0]) {
+  カーテン開ける: async (event, appContext) => {
+    const dbdata = await readData(event.source.userId, 'Curtain_open', appContext);
+    const dbcurtain = await readData(event.source.userId, 'Curtain', appContext);
+    const flag = dbdata.Items[0].Status;
+    const curtain = dbcurtain.Items[0].Status;
+    if (curtain === true) {
       return {
         type: 'text',
-        text: `メモには以下のメッセージが保存されています\n\n${memoData.Items[0].Data}`,
+        text: 'もうカーテンは開いていますよ',
       };
     }
-
+    if (flag === false) {
+      await updateData(event.source.userId, 'Curtain_open', true, appContext);
+    }
     return {
       type: 'text',
-      text: 'メモが存在しません',
+      text: 'カーテンを開けました',
     };
   },
-  メモ開始: async (event, appContext) => {
-    await createData(event.source.userId, 'context', 'memoMode', appContext);
+  カーテン閉める: async (event, appContext) => {
+    const dbdata = await readData(event.source.userId, 'Curtain_close', appContext);
+    const dbcurtain = await readData(event.source.userId, 'Curtain', appContext);
+    const flag = dbdata.Items[0].Status;
+    const curtain = dbcurtain.Items[0].Status;
+    if (curtain === false) {
+      return {
+        type: 'text',
+        text: 'もうカーテンは閉まっていますよ',
+      };
+    }
+    if (flag === false) {
+      await updateData(event.source.userId, 'Curtain_close', true, appContext);
+    }
     return {
       type: 'text',
-      text: 'メモモードを開始しました',
+      text: 'カーテンを閉めました',
+    };
+  },
+  照明つける: async (event, appContext) => {
+    const dbdata = await readData(event.source.userId, 'Light_on', appContext);
+    const dblight = await readData(event.source.userId, 'Light', appContext);
+    const flag = dbdata.Items[0].Status;
+    const light = dblight.Items[0].Status;
+    if (light === true) {
+      return {
+        type: 'text',
+        text: '電気はついています',
+      };
+    }
+    if (flag === false) {
+      await updateData(event.source.userId, 'Light_on', true, appContext);
+    }
+    return {
+      type: 'text',
+      text: '電気をつけました',
+    };
+  },
+  照明けす: async (event, appContext) => {
+    const dbdata = await readData(event.source.userId, 'Light_off', appContext);
+    const dblight = await readData(event.source.userId, 'Light', appContext);
+    const flag = dbdata.Items[0].Status;
+    const light = dblight.Items[0].Status;
+    if (light === false) {
+      return {
+        type: 'text',
+        text: '電気は消えています',
+      };
+    }
+    if (flag === false) {
+      await updateData(event.source.userId, 'Light_off', true, appContext);
+    }
+    return {
+      type: 'text',
+      text: '電気を消しました',
     };
   },
 };

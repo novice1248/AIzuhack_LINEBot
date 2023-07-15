@@ -1,4 +1,4 @@
-import { contextManage } from './context-manage.js';
+import { contextManage } from './content-manage.js';
 import { hasKey } from '../../haskey.js';
 import { messageMap } from './text-map.js';
 

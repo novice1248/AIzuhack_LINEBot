@@ -1,14 +1,14 @@
 const { TABLE_NAME } = process.env;
 
 // データ作成
-export const createData = (userId, dataType, data, appContext) => {
+export const createData = (userId, dataType, status, appContext) => {
   // パラメータを作成
   const param = {
     TableName: TABLE_NAME,
     Item: {
       ID: userId,
       DataType: dataType,
-      Data: data,
+      Status: status,
     },
   };
 
@@ -17,12 +17,12 @@ export const createData = (userId, dataType, data, appContext) => {
 };
 
 // データ取得
-export const readData = (userId, dataType, appContext) => {
+export const readData = (ID, dataType, appContext) => {
   // パラメータを作成
   const param = {
     TableName: TABLE_NAME,
     ExpressionAttributeValues: {
-      ':u': userId,
+      ':u': ID,
       ':d': dataType,
     },
     KeyConditionExpression: 'ID = :u and DataType = :d',
@@ -33,19 +33,19 @@ export const readData = (userId, dataType, appContext) => {
 };
 
 // データ更新
-export const updateData = (userId, dataType, data, appContext) => {
+export const updateData = (ID, dataType, status, appContext) => {
   // パラメータを作成
   const param = {
     TableName: TABLE_NAME,
     Key: {
-      ID: userId,
+      ID,
       DataType: dataType,
     },
     ExpressionAttributeValues: {
-      ':d': data,
+      ':d': status,
     },
     ExpressionAttributeNames: {
-      '#d': 'Data',
+      '#d': 'Status',
     },
     UpdateExpression: 'set #d = :d',
   };
@@ -55,10 +55,10 @@ export const updateData = (userId, dataType, data, appContext) => {
 };
 
 // データ削除
-export const deleteData = (userId, dataType, appContext) => {
+/* export const deleteData = (userId, dataType, appContext) => {
   // パラメータを作成
   const param = {
-    TableName: TABLE_NAME,
+    TableName: TABLE_NAMEC,
     Key: {
       ID: userId,
       DataType: dataType,
@@ -67,4 +67,4 @@ export const deleteData = (userId, dataType, appContext) => {
 
   // DynamoDBへデータを削除
   return appContext.dynamoDBContext.delete(param);
-};
+}; */
