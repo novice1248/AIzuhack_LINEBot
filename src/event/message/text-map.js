@@ -19,10 +19,6 @@ export const messageMap = {
     type: 'text',
     text: 'Hello, world',
   }),
-  設定: () => ({
-    type: 'text',
-    text: 'Hello, world',
-  }),
   使い方: () => ({
     type: 'text',
     text: 'ご要望がございましたら下のmenuからお選びくださいませ。「設定」にて指定していただいた時間に電気をつけ、カーテンをお開けいたします。',
