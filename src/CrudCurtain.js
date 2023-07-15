@@ -1,14 +1,12 @@
-const { TABLE_NAME } = process.env;
+const { TABLE_NAMEC } = process.env;
 
 // データ作成
-export const createData = (userId, dataType, data, appContext) => {
+export const createData = (userId, appContext) => {
   // パラメータを作成
   const param = {
-    TableName: TABLE_NAME,
+    TableName: TABLE_NAMEC,
     Item: {
       ID: userId,
-      DataType: dataType,
-      Data: data,
     },
   };
 
@@ -20,34 +18,32 @@ export const createData = (userId, dataType, data, appContext) => {
 export const readData = (userId, dataType, appContext) => {
   // パラメータを作成
   const param = {
-    TableName: TABLE_NAME,
+    TableName: TABLE_NAMEC,
+    Key: {
+      userId: { S: userId },
+    },
     ExpressionAttributeValues: {
       ':u': userId,
-      ':d': dataType,
     },
-    KeyConditionExpression: 'ID = :u and DataType = :d',
+    KeyConditionExpression: 'ID = :u',
   };
 
   // DynamoDBからデータを取得
-  return appContext.dynamoDBContext.query(param);
+  return appContext.dynamoDBContext.getItem(param).Item.ID; // .BOOLつけた方がいいかも
 };
 
 // データ更新
 export const updateData = (userId, dataType, data, appContext) => {
   // パラメータを作成
   const param = {
-    TableName: TABLE_NAME,
+    TableName: TABLE_NAMEC,
     Key: {
       ID: userId,
-      DataType: dataType,
     },
+    UpdateExpression: 'set ID = :newValue',
     ExpressionAttributeValues: {
-      ':d': data,
+      ':newValue': { BOOL: data },
     },
-    ExpressionAttributeNames: {
-      '#d': 'Data',
-    },
-    UpdateExpression: 'set #d = :d',
   };
 
   // DynamoDBへデータを更新
@@ -55,10 +51,10 @@ export const updateData = (userId, dataType, data, appContext) => {
 };
 
 // データ削除
-export const deleteData = (userId, dataType, appContext) => {
+/* export const deleteData = (userId, dataType, appContext) => {
   // パラメータを作成
   const param = {
-    TableName: TABLE_NAME,
+    TableName: TABLE_NAMEC,
     Key: {
       ID: userId,
       DataType: dataType,
@@ -67,4 +63,4 @@ export const deleteData = (userId, dataType, appContext) => {
 
   // DynamoDBへデータを削除
   return appContext.dynamoDBContext.delete(param);
-};
+}; */
