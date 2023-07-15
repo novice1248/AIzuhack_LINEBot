@@ -1,5 +1,5 @@
 import { error } from '../../log.js';
-import { createData, readData } from '../../CrudCurtain.js';
+import { createData, readData } from '../../Crud.js';
 import { hasKey } from '../../haskey.js';
 
 const contextMap = {

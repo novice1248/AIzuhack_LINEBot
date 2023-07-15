@@ -1,14 +1,22 @@
 {
-  "TableName": "Time",
+  "TableName": "TABLE",
   "KeySchema": [
     {
       "AttributeName": "ID",
       "KeyType": "HASH"
+    },
+    {
+      "AttributeName": "DataType",
+      "KeyType": "RANGE"
     }
   ],
   "AttributeDefinitions": [
     {
-      "AttributeName": "ExcuteTime",
+      "AttributeName": "ID",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "DataType",
       "AttributeType": "S"
     }
   ],
