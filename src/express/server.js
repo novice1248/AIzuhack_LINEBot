@@ -34,17 +34,53 @@ app.get('/curtain-open', async (_req, res) => {
     res.send('Please Open');
     await updateData(process.env.LINE_USERID, 'Curtain_open', false, { dynamoDBContext });
     await updateData(process.env.LINE_USERID, 'Curtain', true, { dynamoDBContext });
+  } else {
+    res.send('false');
   }
 });
 
 // /time-open にアクセスがあった時、日時を取得して7時0~3分の時 succeededと返す
-app.get('/time-open', (_req, res) => {
-  const hour = new Date().getHours();
-  const minute = new Date().getMinutes();
-  if (hour === 7 && minute < 3) {
-    res.send('succeeded');
+app.get('/time-open1', async (_req, res) => {
+  const dbcurtain = await readData(process.env.LINE_USERID, 'Curtain', { dynamoDBContext });
+  const curtain_flag = dbcurtain.Items[0].Status;
+  const posthour = await readData(process.env.LINE_USERID, 'Hour', { dynamoDBContext });
+  const sethour = posthour.Items[0].Status;
+  const postminute = await readData(process.env.LINE_USERID, 'Minute', { dynamoDBContext });
+  const setminute = postminute.Items[0].Status;
+  const date = new Date();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  const padhour = String(hour).padStart(2, '0');
+  const padminute = String(minute).padStart(2, '0');
+  if (padhour ===  sethour && padminute === setminute) {
+    if(curtain_flag === false) {
+      res.send('Please Open');
+      await updateData(process.env.LINE_USERID, 'Curtain', true, { dynamoDBContext });
+    }
   } else {
-    res.send('Error\n');
+    res.send("false");
+  }
+});
+
+app.get('/time-open2', async (_req, res) => {
+  const dblight = await readData(process.env.LINE_USERID, 'Light', { dynamoDBContext });
+  const flag = dblight.Items[0].Status;
+  const posthour =await readData(process.env.LINE_USERID, 'Hour', { dynamoDBContext });
+  const sethour = posthour.Items[0].Status;
+  const postminute =await readData(process.env.LINE_USERID, 'Minute', { dynamoDBContext });
+  const setminute = postminute.Items[0].Status;
+  const date = new Date();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  const padhour = String(hour).padStart(2, '0');
+  const padminute = String(minute).padStart(2, '0');
+  if (padhour ===  sethour && padminute === setminute) {
+    if(flag === false) {
+      res.send('Please Turn on');
+      await updateData(process.env.LINE_USERID, 'Light', true, { dynamoDBContext });
+    }
+  } else {
+    res.send('false');
   }
 });
 
@@ -56,17 +92,8 @@ app.get('/curtain-close', async (_req, res) => {
     res.send('Please close');
     await updateData(process.env.LINE_USERID, 'Curtain_close', false, { dynamoDBContext });
     await updateData(process.env.LINE_USERID, 'Curtain', false, { dynamoDBContext });
-  }
-});
-
-// /time-close にアクセスがあった時、日時を取得して8時0~3分の時 succeededと返す
-app.get('/time-close', (_req, res) => {
-  const hour = new Date().getHours();
-  const minute = new Date().getMinutes();
-  if (hour === 8 && minute < 3) {
-    res.send('succeeded');
   } else {
-    res.send('Error\n');
+    res.send('false');
   }
 });
 
@@ -78,6 +105,8 @@ app.get('/light-on', async (_req, res) => {
     res.send('Please Turn on');
     await updateData(process.env.LINE_USERID, 'Light_on', false, { dynamoDBContext });
     await updateData(process.env.LINE_USERID, 'Light', true, { dynamoDBContext });
+  } else {
+    res.send('false');
   }
 });
 
@@ -89,6 +118,8 @@ app.get('/light-off', async (_req, res) => {
     res.send('Please Turn off');
     await updateData(process.env.LINE_USERID, 'Light_off', false, { dynamoDBContext });
     await updateData(process.env.LINE_USERID, 'Light', false, { dynamoDBContext });
+  } else {
+    res.send('false');
   }
 });
 

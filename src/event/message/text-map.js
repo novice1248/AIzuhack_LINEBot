@@ -23,7 +23,24 @@ export const messageMap = {
     type: 'text',
     text: 'ご要望がございましたら下のmenuからお選びくださいませ。「設定」にて指定していただいた時間に電気をつけ、カーテンをお開けいたします。',
   }),
-  カーテン開ける: async (event, appContext) => {
+  設定: () => ({
+    type: 'text',
+    text: 'a',
+    quickReply: {
+      items: [
+        {
+          type: 'action',
+          action: {
+            type: 'datetimepicker',
+            label: '起きたい時間を教えてください',
+            data: 'a',
+            mode: 'time',
+          },
+        },
+      ],
+    },
+  }),
+  カーテン開けて: async (event, appContext) => {
     const dbdata = await readData(event.source.userId, 'Curtain_open', appContext);
     const dbcurtain = await readData(event.source.userId, 'Curtain', appContext);
     const flag = dbdata.Items[0].Status;
@@ -42,7 +59,7 @@ export const messageMap = {
       text: 'カーテンを開けました',
     };
   },
-  カーテン閉める: async (event, appContext) => {
+  カーテン閉めて: async (event, appContext) => {
     const dbdata = await readData(event.source.userId, 'Curtain_close', appContext);
     const dbcurtain = await readData(event.source.userId, 'Curtain', appContext);
     const flag = dbdata.Items[0].Status;
@@ -61,7 +78,7 @@ export const messageMap = {
       text: 'カーテンを閉めました',
     };
   },
-  照明つける: async (event, appContext) => {
+  照明つけて: async (event, appContext) => {
     const dbdata = await readData(event.source.userId, 'Light_on', appContext);
     const dblight = await readData(event.source.userId, 'Light', appContext);
     const flag = dbdata.Items[0].Status;
@@ -80,7 +97,7 @@ export const messageMap = {
       text: '電気をつけました',
     };
   },
-  照明けす: async (event, appContext) => {
+  照明消して: async (event, appContext) => {
     const dbdata = await readData(event.source.userId, 'Light_off', appContext);
     const dblight = await readData(event.source.userId, 'Light', appContext);
     const flag = dbdata.Items[0].Status;

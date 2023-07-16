@@ -1,14 +1,21 @@
 // ポストバックイベントが飛んできた時
-export const postbackHandler = (event) => {
+import {
+  readData, updateData,
+} from '../Crud.js';
+
+export const postbackHandler = async (event, appContext) => {
     let message;
     // ポストバックデータをpostbackDataに格納
     const postbackData = event.postback.data;
     // もしevent.postback.paramsが存在する場合
     if (event.postback.params) {
+      const time = event.postback.params.time.split(':');
+      await updateData(event.source.userId, 'Hour', time[0], appContext);
+      await updateData(event.source.userId, 'Minute', time[1], appContext);
       // 返信するメッセージを作成
       message = {
         type: 'text',
-        text: `日時データを受け取りました！\ndata: ${postbackData}\ndatetime: ${event.postback.params.datetime}`,
+        text: `日時データを受け取りました！\ndata: ${postbackData}\ntime: ${event.postback.params.time}`,
       };
       // 存在しない場合
     } else {
